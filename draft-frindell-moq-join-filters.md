@@ -19,8 +19,8 @@
 # Change the file extension to match the format (.xml for XML, etc...)
 #
 ###
-title: "TODO - Your title"
-abbrev: "TODO - Abbreviation"
+title: "Join Subscription Filters for Media over QUIC Transport"
+abbrev: "moqt-join"
 category: info
 
 docname: draft-todo-yourname-protocol-latest
