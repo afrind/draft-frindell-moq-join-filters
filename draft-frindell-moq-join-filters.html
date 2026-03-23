@@ -5,15 +5,23 @@
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
 <title>Join Subscription Filters for Media over QUIC Transport</title>
-<meta content="Your Name Here" name="author">
+<meta content="afrind" name="author">
 <meta content="
-       TODO Abstract 
+       This document defines two new MOQT Subscription Filters -- Join
+Relative Group and Join Absolute Group -- that enable a subscriber
+to receive both historical and live content on a single
+subscription.  Unlike Joining FETCH, which delivers past objects on
+a single stream with head-of-line blocking, Join filters deliver
+historical content using SUBSCRIBE semantics: per-subgroup streams,
+subject to delivery timeout, priorities, and datagram forwarding
+preferences.  The publisher uses a combination of cache and upstream
+FETCH to assemble complete groups for delivery. 
     " name="description">
 <meta content="xml2rfc 3.32.0" name="generator">
 <meta content="next generation" name="keyword">
 <meta content="unicorn" name="keyword">
 <meta content="sparkling distributed ledger" name="keyword">
-<meta content="draft-todo-yourname-protocol-latest" name="ietf.draft">
+<meta content="draft-frindell-moq-join-filters-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.32.0
     Python 3.12.12
@@ -1050,7 +1058,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <td class="right">March 2026</td>
 </tr></thead>
 <tfoot><tr>
-<td class="left">Here</td>
+<td class="left">afrind</td>
 <td class="center">Expires 24 September 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
@@ -1059,9 +1067,9 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <div id="internal-metadata" class="document-information">
 <dl id="identifiers">
 <dt class="label-workgroup">Workgroup:</dt>
-<dd class="workgroup">WG Working Group</dd>
+<dd class="workgroup">Media Over QUIC</dd>
 <dt class="label-internet-draft">Internet-Draft:</dt>
-<dd class="internet-draft">draft-todo-yourname-protocol-latest</dd>
+<dd class="internet-draft">draft-frindell-moq-join-filters-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
 <time datetime="2026-03-23" class="published">23 March 2026</time>
@@ -1073,7 +1081,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
-      <div class="author-name">Y. N. Here</div>
+      <div class="author-name">afrind</div>
 <div class="org">Your Organization Here</div>
 </div>
 </dd>
@@ -1082,7 +1090,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">Join Subscription Filters for Media over QUIC Transport</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">TODO Abstract<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document defines two new MOQT Subscription Filters -- Join
+Relative Group and Join Absolute Group -- that enable a subscriber
+to receive both historical and live content on a single
+subscription.  Unlike Joining FETCH, which delivers past objects on
+a single stream with head-of-line blocking, Join filters deliver
+historical content using SUBSCRIBE semantics: per-subgroup streams,
+subject to delivery timeout, priorities, and datagram forwarding
+preferences.  The publisher uses a combination of cache and upstream
+FETCH to assemble complete groups for delivery.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1090,14 +1106,15 @@ svg :is([fill="white"], [fill^="#fff"]) {
       </h2>
 <p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
 <p id="section-note.1-2">
-        The latest revision of this draft can be found at <span><a href="https://example.com/LATEST">https://example.com/LATEST</a></span>.
-        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-todo-yourname-protocol/">https://datatracker.ietf.org/doc/draft-todo-yourname-protocol/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+        The latest revision of this draft can be found at <span><a href="https://afrind.github.io/draft-frindell-moq-join-filters/draft-frindell-moq-join-filters.html">https://afrind.github.io/draft-frindell-moq-join-filters/draft-frindell-moq-join-filters.html</a></span>.
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-frindell-moq-join-filters/">https://datatracker.ietf.org/doc/draft-frindell-moq-join-filters/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
 <p id="section-note.1-3">
         Discussion of this document takes place on the
-        WG Working Group mailing list (<span><a href="mailto:WG@example.com">mailto:WG@example.com</a></span>),
-        which is archived at <span><a href="https://example.com/WG">https://example.com/WG</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+        Media Over QUIC Working Group mailing list (<span><a href="mailto:moq@ietf.org">mailto:moq@ietf.org</a></span>),
+        which is archived at <span><a href="https://mailarchive.ietf.org/arch/browse/moq/">https://mailarchive.ietf.org/arch/browse/moq/</a></span>.
+        Subscribe at <span><a href="https://www.ietf.org/mailman/listinfo/moq/">https://www.ietf.org/mailman/listinfo/moq/</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
 <p id="section-note.1-4">Source for this draft and an issue tracker can be found at
-        <span><a href="https://github.com/USER/REPO">https://github.com/USER/REPO</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
+        <span><a href="https://github.com/afrind/draft-frindell-moq-join-filters">https://github.com/afrind/draft-frindell-moq-join-filters</a></span>.<a href="#section-note.1-4" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1154,19 +1171,87 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.2.1" class="keepWithNext"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1" class="keepWithNext"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-subscription-filters" class="internal xref">Subscription Filters</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
+                <p id="section-toc.1-1.3.2.1.1" class="keepWithNext"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-join-relative-group" class="internal xref">Join Relative Group</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-join-absolute-group" class="internal xref">Join Absolute Group</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-subscribe_ok" class="internal xref">SUBSCRIBE_OK</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
-            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-fill-semantics" class="internal xref">Fill Semantics</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-per-group-fill" class="internal xref">Per-Group Fill</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-subgroup-integrity" class="internal xref">Subgroup Integrity</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-join-group-transition" class="internal xref">Join Group Transition</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-groups-before-the-join-grou" class="internal xref">Groups Before the Join Group</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.5">
+                <p id="section-toc.1-1.5.2.5.1"><a href="#section-5.5" class="auto internal xref">5.5</a>.  <a href="#name-groups-after-the-join-group" class="internal xref">Groups After the Join Group</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-delivery-constraints" class="internal xref">Delivery Constraints</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
-            <p id="section-toc.1-1.7.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-relay-behavior" class="internal xref">Relay Behavior</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-upstream-subscription" class="internal xref">Upstream Subscription</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-shared-state" class="internal xref">Shared State</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-datagram-handling" class="internal xref">Datagram Handling</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-upstream-fetch" class="internal xref">Upstream FETCH</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-re-join-and-publish-join" class="internal xref">Re-join and Publish Join</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-re-join-via-request_update" class="internal xref">Re-join via REQUEST_UPDATE</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-publish-join" class="internal xref">Publish Join</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-interaction-with-joining-fe" class="internal xref">Interaction with Joining FETCH</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
 </li>
         </ul>
 </nav>
@@ -1177,7 +1262,32 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">TODO Introduction<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-1">When a subscriber joins a track mid-stream, it often needs recent
+historical content to begin playback.  MOQT provides two mechanisms
+today:<a href="#section-1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1-2.1">
+          <p id="section-1-2.1.1">SUBSCRIBE delivers future content using per-subgroup streams,
+allowing independent progress and partial delivery.<a href="#section-1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-1-2.2">
+          <p id="section-1-2.2.1">FETCH / Joining FETCH delivers past content on a single stream,
+guaranteeing completeness but introducing head-of-line blocking
+across the entire range.<a href="#section-1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-1-3">For latency-sensitive applications, the single-stream delivery of
+Joining FETCH is problematic.  Objects from earlier groups block
+delivery of later, more relevant objects.  A subscriber that joins
+during group 10 and requests groups 5-10 must wait for group 5 to
+fully transfer before receiving group 6, even if group 6 is
+immediately available.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This document defines Join filters, which instruct the publisher to
+deliver historical groups using SUBSCRIBE semantics.  Each subgroup
+is delivered on its own stream (or via datagrams), subject to the
+subscription's delivery timeout, group order, and priorities.  The
+publisher assembles complete groups from its cache, supplemented by
+upstream FETCHes for any missing objects.<a href="#section-1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="conventions-and-definitions">
@@ -1191,26 +1301,385 @@ described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</s
 appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="security-considerations">
+<div id="subscription-filters">
 <section id="section-3">
-      <h2 id="name-security-considerations">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      <h2 id="name-subscription-filters">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-subscription-filters" class="section-name selfRef">Subscription Filters</a>
       </h2>
-<p id="section-3-1">TODO Security<a href="#section-3-1" class="pilcrow">¶</a></p>
+<div id="join-relative-group">
+<section id="section-3.1">
+        <h3 id="name-join-relative-group">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-join-relative-group" class="section-name selfRef">Join Relative Group</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="section-3.1-1">
+<pre>
+Subscription Filter {
+  Filter Type (vi64) = 0xTBD,
+  Num Fill Groups (vi64),
+}
+</pre><a href="#section-3.1-1" class="pilcrow">¶</a>
+</div>
+<p id="section-3.1-2">The subscriber requests delivery starting from Num Fill Groups
+groups before the current group.  A value of 0 means delivery
+starts at the current (join) group.  A value of 2 means the join
+group plus the 2 most recent complete groups.<a href="#section-3.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">The publisher resolves the actual starting group based on the live
+edge at subscription time.  The join group -- the group containing
+the Largest Location reported in SUBSCRIBE_OK -- receives
+per-subgroup fill/live treatment (<a href="#join-group-transition" class="auto internal xref">Section 5.3</a>).  Groups before the
+join group are delivered entirely via fill, even if objects in
+those groups arrive after the subscription is established.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="join-absolute-group">
+<section id="section-3.2">
+        <h3 id="name-join-absolute-group">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-join-absolute-group" class="section-name selfRef">Join Absolute Group</a>
+        </h3>
+<div class="alignLeft art-text artwork" id="section-3.2-1">
+<pre>
+Subscription Filter {
+  Filter Type (vi64) = 0xTBD,
+  Start Group (vi64),
+}
+</pre><a href="#section-3.2-1" class="pilcrow">¶</a>
+</div>
+<p id="section-3.2-2">The subscriber requests delivery starting from the specified group.
+The publisher determines the join group as with Join Relative Group.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="subscribeok">
+<section id="section-4">
+      <h2 id="name-subscribe_ok">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-subscribe_ok" class="section-name selfRef">SUBSCRIBE_OK</a>
+      </h2>
+<p id="section-4-1">The SUBSCRIBE_OK for a Join filter includes:<a href="#section-4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4-2.1">
+          <p id="section-4-2.1.1">Largest Location: the live edge at subscription time, defining the
+join group.<a href="#section-4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-4-2.2">
+          <p id="section-4-2.2.1">FILL_START message parameter (0xTBD): the group ID of the first
+group being filled.  This may differ from what the subscriber
+requested based on publisher policy.<a href="#section-4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+<p id="section-4-3">The subscriber can compare FILL_START with its request to determine
+if the publisher honored the full range.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">If FILL_START is absent, the publisher has converted the
+subscription to a NextGroup filter.  Merging historical and live
+content requires the publisher to buffer at least the current
+group; a publisher that cannot or will not do so <span class="bcp14">MUST</span> omit
+FILL_START.  The subscriber <span class="bcp14">MAY</span> issue standalone FETCHes to
+retrieve historical content.<a href="#section-4-4" class="pilcrow">¶</a></p>
+<p id="section-4-5">It's possible that a requested group is not in cache and no longer
+retrievable via upstream FETCH.  In this case, the subscriber does
+not get any signal that the old groups will not be delivered.<a href="#section-4-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="fill-semantics">
+<section id="section-5">
+      <h2 id="name-fill-semantics">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-fill-semantics" class="section-name selfRef">Fill Semantics</a>
+      </h2>
+<p id="section-5-1">Groups in the fill range (FILL_START through the join group) are
+delivered using SUBSCRIBE semantics.  The publisher <span class="bcp14">MUST</span> attempt
+to deliver each subgroup and datagram that exists in each fill
+group -- relays assemble complete groups from cache and upstream
+FETCH as needed.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<div id="per-group-fill">
+<section id="section-5.1">
+        <h3 id="name-per-group-fill">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-per-group-fill" class="section-name selfRef">Per-Group Fill</a>
+        </h3>
+<p id="section-5.1-1">For each group in the fill range, the publisher:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.1-2">
+<li id="section-5.1-2.1">
+            <p id="section-5.1-2.1.1">Identifies cached objects and which object ID ranges are known
+(present or confirmed absent).<a href="#section-5.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.2">
+            <p id="section-5.1-2.2.1">Relay publishers issue upstream FETCHes for any unknown ranges
+within the group.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.3">
+            <p id="section-5.1-2.3.1">Delivers objects per-subgroup as they become available.<a href="#section-5.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-5.1-3">The publisher is not required to deliver initiate delivery of fill
+groups in order -- a relay <span class="bcp14">MAY</span> begin delivering cached content while
+waiting for upstream FETCHes to complete. However, within each
+subgroup, objects <span class="bcp14">MUST</span> be delivered in object ID order.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="subgroup-integrity">
+<section id="section-5.2">
+        <h3 id="name-subgroup-integrity">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-subgroup-integrity" class="section-name selfRef">Subgroup Integrity</a>
+        </h3>
+<p id="section-5.2-1">A publisher <span class="bcp14">MUST NOT</span> begin delivering a subgroup stream for a fill
+group until it can confirm integrity from the start -- that is, it
+has resolved (via cache or fetch) all object IDs from 0 through at
+least the first object in the subgroup.  Otherwise it cannot know
+that it has the first object in the subgroup.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">As gaps are resolved, additional subgroups can become deliverable.
+The publisher <span class="bcp14">MAY</span> begin delivering these subgroups as soon as their
+integrity is established, without waiting for other subgroups or
+gaps to complete.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="join-group-transition">
+<section id="section-5.3">
+        <h3 id="name-join-group-transition">
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-join-group-transition" class="section-name selfRef">Join Group Transition</a>
+        </h3>
+<p id="section-5.3-1">The join group receives special treatment.  New content arrives via
+the live subscription concurrently with fill delivery from cache.
+Every subgroup in the join group begins in fill mode and transitions
+to live after fill completes.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
+<p id="section-5.3-2">For each subgroup, the publisher tracks the largest object ID
+received (from cache or live) at the time fill began.  The
+publisher delivers cached objects for that subgroup in order.  Once
+it has delivered up to and including the largest received object,
+the subgroup transitions to live: subsequent objects from the
+upstream subscription are forwarded directly.  Objects received
+via the live subscription while fill is in progress are suppressed
+to avoid duplicates.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">Subgroups not yet known at subscription time -- including those
+discovered during gap fetching -- also begin in fill mode.  A
+subgroup stream cannot be initiated until the publisher can confirm
+it has the correct start (see <a href="#subgroup-integrity" class="auto internal xref">Section 5.2</a>).  Once a newly
+discovered subgroup establishes integrity, it is filled from cache
+and transitions to live as above.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-4">Each subgroup transitions independently.  A subgroup that completes
+fill early begins receiving live content immediately, while other
+subgroups may still be filling.<a href="#section-5.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="groups-before-the-join-group">
+<section id="section-5.4">
+        <h3 id="name-groups-before-the-join-grou">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-groups-before-the-join-grou" class="section-name selfRef">Groups Before the Join Group</a>
+        </h3>
+<p id="section-5.4-1">Groups before the join group are delivered entirely from fill.  Live
+content for these groups (arriving via the upstream subscription) is
+not forwarded to the subscriber.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="groups-after-the-join-group">
+<section id="section-5.5">
+        <h3 id="name-groups-after-the-join-group">
+<a href="#section-5.5" class="section-number selfRef">5.5. </a><a href="#name-groups-after-the-join-group" class="section-name selfRef">Groups After the Join Group</a>
+        </h3>
+<p id="section-5.5-1">Groups after the join group are delivered entirely from the live
+stream, using normal SUBSCRIBE semantics.<a href="#section-5.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="delivery-constraints">
+<section id="section-6">
+      <h2 id="name-delivery-constraints">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-delivery-constraints" class="section-name selfRef">Delivery Constraints</a>
+      </h2>
+<p id="section-6-1">Fill content is subject to the same delivery constraints as live
+content:<a href="#section-6-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6-2.1">
+          <p id="section-6-2.1.1">Delivery Timeout: Groups or objects that exceed the delivery
+timeout <span class="bcp14">MAY</span> be dropped, as with any SUBSCRIBE delivery.  The
+delivery timeout starts when an object is read from cache and
+queued to send.<a href="#section-6-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.2">
+          <p id="section-6-2.2.1">Group Order: Fill groups are delivered respecting the
+subscription's group order.  With "descending" order, the join
+group is prioritized over older groups.<a href="#section-6-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.3">
+          <p id="section-6-2.3.1">Subgroup Priorities: Within a group, subgroups are delivered
+according to their publisher-assigned priorities.<a href="#section-6-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.4">
+          <p id="section-6-2.4.1">Send Rate: If the subscription specifies a Send Rate parameter,
+fill delivery is paced accordingly.  Higher-priority subgroups
+are served first when multiple subgroups compete for send
+capacity.  Live data is not subject to the Send Rate limit.<a href="#section-6-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-6-2.5">
+          <p id="section-6-2.5.1">Datagrams: Objects with datagram forwarding preference are
+delivered via datagrams, as with normal SUBSCRIBE delivery.<a href="#section-6-2.5.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="relay-behavior">
+<section id="section-7">
+      <h2 id="name-relay-behavior">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-relay-behavior" class="section-name selfRef">Relay Behavior</a>
+      </h2>
+<div id="upstream-subscription">
+<section id="section-7.1">
+        <h3 id="name-upstream-subscription">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-upstream-subscription" class="section-name selfRef">Upstream Subscription</a>
+        </h3>
+<p id="section-7.1-1">A relay receiving a Join filter <span class="bcp14">SHOULD</span> consider its cache state
+before subscribing upstream.  If the relay already has complete
+groups in cache, it <span class="bcp14">SHOULD NOT</span> request those groups again via an
+upstream Join filter, as this would result in redundant delivery of
+already-cached objects.  Instead, the relay <span class="bcp14">SHOULD</span> subscribe
+upstream with a filter that covers only the groups it does not
+already have, or use a standard Latest Group / Latest Object filter
+and issue targeted FETCHes for any missing ranges.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">If the upstream publisher does not support Join filters, the relay
+<span class="bcp14">MAY</span> fall back to a combination of SUBSCRIBE with a standard filter
+and upstream FETCHes to populate its cache, then serve the
+downstream subscriber using Join semantics from its own cache.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="shared-state">
+<section id="section-7.2">
+        <h3 id="name-shared-state">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-shared-state" class="section-name selfRef">Shared State</a>
+        </h3>
+<p id="section-7.2-1">Multiple downstream subscribers may request Join filters for the
+same track with different fill ranges.  Each subscriber maintains
+independent fill/live transition state per subgroup.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="datagram-handling">
+<section id="section-7.3">
+        <h3 id="name-datagram-handling">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-datagram-handling" class="section-name selfRef">Datagram Handling</a>
+        </h3>
+<p id="section-7.3-1">Objects with datagram forwarding preference do not use subgroup
+streams and therefore cannot transition from fill to live in the
+same way.  For datagrams in the join group, the publisher uses the
+object ID of the Largest Location at subscription time as the
+boundary: objects with ID less than or equal to the largest are
+delivered via fill (from cache), and objects with ID greater than
+the largest are delivered via live (from the upstream subscription).
+The publisher suppresses live datagrams that fall within the fill
+range to avoid duplicates.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="upstream-fetch">
+<section id="section-7.4">
+        <h3 id="name-upstream-fetch">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-upstream-fetch" class="section-name selfRef">Upstream FETCH</a>
+        </h3>
+<p id="section-7.4-1">When the relay's cache has gaps in a fill group, it issues upstream
+FETCHes to retrieve the missing ranges.  The relay <span class="bcp14">SHOULD</span> gate
+fetches so that only one fetch per gap range is in flight, sharing
+results across subscribers that need the same group.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="re-join-and-publish-join">
+<section id="section-8">
+      <h2 id="name-re-join-and-publish-join">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-re-join-and-publish-join" class="section-name selfRef">Re-join and Publish Join</a>
+      </h2>
+<div id="re-join-via-requestupdate">
+<section id="section-8.1">
+        <h3 id="name-re-join-via-request_update">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-re-join-via-request_update" class="section-name selfRef">Re-join via REQUEST_UPDATE</a>
+        </h3>
+<p id="section-8.1-1">A subscriber <span class="bcp14">MAY</span> send a REQUEST_UPDATE with a Join Relative Group
+or Join Absolute Group filter to re-join a track after a gap in
+delivery -- for example, after a subscription transitions from
+forward=0 back to forward=1.<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2">Upon receiving a REQUEST_UPDATE with a Join filter, the publisher:<a href="#section-8.1-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-8.1-3">
+<li id="section-8.1-3.1">
+            <p id="section-8.1-3.1.1">Resets any open subgroup streams for the current group.<a href="#section-8.1-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-8.1-3.2">
+            <p id="section-8.1-3.2.1">Treats the request as a fresh join: determines a new join group
+at the current live edge, computes the fill range from the
+filter, and begins fill delivery.<a href="#section-8.1-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-8.1-3.3">
+            <p id="section-8.1-3.3.1">Sends REQUEST_OK with the new Largest Location and FILL_START
+parameter.<a href="#section-8.1-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+<p id="section-8.1-4">The subscriber <span class="bcp14">MAY</span> receive duplicate objects for the group that
+was in progress when the original subscription paused, since
+subgroup streams are reset and fill restarts from the beginning
+of that group.  This avoids the need to track per-subgroup
+delivery state across the gap.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="publish-join">
+<section id="section-8.2">
+        <h3 id="name-publish-join">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-publish-join" class="section-name selfRef">Publish Join</a>
+        </h3>
+<p id="section-8.2-1">When a relay begins publishing a track (e.g., taking over from a
+previous publisher or joining a publish mid-stream), it may have
+cached content from the previous publisher but no active upstream
+subscription.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-2">The relay <span class="bcp14">MAY</span> include the FILL_START parameter in PUBLISH_OK to
+indicate that it will fill subscribers from the specified group
+using Join semantics.  This allows the relay to serve cached
+content to existing subscribers using the same fill algorithm as
+a Join filter subscription, without requiring subscribers to
+re-subscribe.<a href="#section-8.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="interaction-with-joining-fetch">
+<section id="section-9">
+      <h2 id="name-interaction-with-joining-fe">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-interaction-with-joining-fe" class="section-name selfRef">Interaction with Joining FETCH</a>
+      </h2>
+<p id="section-9-1">A Join filter subscription is intended to replace the need for a
+Joining FETCH, since historical content is delivered with SUBSCRIBE
+semantics directly.<a href="#section-9-1" class="pilcrow">¶</a></p>
+<p id="section-9-2">However, if the publisher omits FILL_START in SUBSCRIBE_OK
+(converting the subscription to NextGroup), the subscriber <span class="bcp14">MAY</span>
+issue standalone FETCHes to retrieve historical content.<a href="#section-9-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-10">
+      <h2 id="name-security-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<p id="section-10-1">TODO Security<a href="#section-10-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
-<section id="section-4">
+<section id="section-11">
       <h2 id="name-iana-considerations">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
-<p id="section-4-1">This document has no IANA actions.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-11-1">Register two new Subscription Filter types and one new Message
+Parameter:<a href="#section-11-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-11-2.1">
+          <p id="section-11-2.1.1">Filter Type 0xTBD: Join Relative Group<a href="#section-11-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-2.2">
+          <p id="section-11-2.2.1">Filter Type 0xTBD: Join Absolute Group<a href="#section-11-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-11-2.3">
+          <p id="section-11-2.3.1">Message Parameter 0xTBD: FILL_START (in SUBSCRIBE_OK, REQUEST_OK,
+and PUBLISH_OK)<a href="#section-11-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
 </section>
 </div>
 <div id="sec-normative-references">
-<section id="section-5">
+<section id="section-12">
       <h2 id="name-normative-references">
-<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
       </h2>
 <dl class="references">
 <dt id="RFC2119">[RFC2119]</dt>
@@ -1238,11 +1707,11 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
       </h2>
 <address class="vcard">
-        <div dir="auto" class="left"><span class="fn nameRole">Your Name Here</span></div>
+        <div dir="auto" class="left"><span class="fn nameRole">afrind</span></div>
 <div dir="auto" class="left"><span class="org">Your Organization Here</span></div>
 <div class="email">
 <span>Email:</span>
-<a href="mailto:your.email@example.com" class="email">your.email@example.com</a>
+<a href="mailto:afrind@users.noreply.github.com" class="email">afrind@users.noreply.github.com</a>
 </div>
 </address>
 </section>
